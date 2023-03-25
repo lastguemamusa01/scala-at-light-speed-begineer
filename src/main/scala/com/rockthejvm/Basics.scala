@@ -17,7 +17,7 @@ object Basics extends App {
   // value - expressions, expressions = structures that can be reduced to a value
   val anExpression = 2 + 3
 
-  // in java or c are instructions, but in scala is expressions instructions
+  // in java or c are instructions, but in scala is expressions
   // scala all is expressions, even if, this means all expression can be reduced to a value
 
   val ifExpression = if (meaningOfLife > 43) 56 else 999 // ternary operator - meaningOfLife > 43 ? 56 : 999
@@ -37,6 +37,7 @@ object Basics extends App {
     // value of block is the value of the last expression
     aLocalValue + 3
   }
+
 
   // define a function
   def myFunction(x: Int, y: String): String = {

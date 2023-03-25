@@ -19,6 +19,7 @@ object Advanced extends App {
   val eagerValue = lazyValueWithSideEffect+1
 
   // useful in infinite collections and some rare use cases
+
   // pseudo-collections: Option, Try - they are own types, not collection themselves
   // Option try - used for unsafe method
   def methodWhichCanReturnNull(): String = "hello, scala"
@@ -55,7 +56,7 @@ object Advanced extends App {
 
   // try can wrap something that can throw an exception
   val aTry = Try(methodWhichCanThrowException()) // Try object containing either String or Exception
-  // a try = "collection" with eaither a value if the code wen well, or an exception if the code threw one
+  // a try = "collection" with either a value if the code wen well, or an exception if the code threw one
 
   // pattern matching
   val anotherStringProcessing = aTry match {
@@ -95,7 +96,7 @@ object Advanced extends App {
 
   Thread.sleep(2000) // block the running by 1 seconds
 
-  // monads - abstracts -> futre, try, option -> just call pseudo-collection
+  // monads - abstracts -> future, try, option -> just call pseudo-collection
 
   /**
    * Implicits

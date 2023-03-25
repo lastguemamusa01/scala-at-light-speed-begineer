@@ -11,6 +11,11 @@ object ObjectOrientation extends App {
   }
   val anAnimal = new Animal
 
+  class Anmal {
+    val age: Int = 0
+    def eat(): Unit = println("im eating")
+  }
+
   // inheritance
   class Dog(val name: String) extends Animal // constructor definition
   val aDog = new Dog("Lassie")
@@ -23,10 +28,10 @@ object ObjectOrientation extends App {
   // subtype polymorphism
   val aDeclaredAnimal: Animal = new Dog("Hachi")
   // the most derived moethod will be called at runtime
-  aDeclaredAnimal.eat()  // the eath method will be called from Dog Class if Dog class overide the eat method
+  aDeclaredAnimal.eat()  // the eat method will be called from Dog Class if Dog class overide the eat method
 
   // abstract class
-  abstract  class WalkingAnimal {
+  abstract class WalkingAnimal {
     // all fields or methods by default are public
     // scala there is not public reserved word
     // private or protected - restriction
@@ -82,6 +87,7 @@ object ObjectOrientation extends App {
     // special method is scala apply
     // methods on objects are similar to java static methods
     def apply(x: Int): Int = x + 1  // can take any arguments, this can be present in any class, in any object, wherever you like
+    // presence of an apply method in a class allows instances of that class to be invoked like functions -> MySingleton(56)
   }
 
   MySingleton.mySpecialMethod()
@@ -116,7 +122,7 @@ object ObjectOrientation extends App {
   // exceptions
 
   try {
-    // cod that can throw
+    // code that can throw
     val x: String = null
     x.length
   } catch {
@@ -145,7 +151,7 @@ object ObjectOrientation extends App {
   // 1 - in scala we usually operate with IMMUTABLE values/objects
   // modification to an instance of a class will normally result or
   // should result for best practice should result in another instance
-  // any modification to an boject must return another object
+  // any modification to an object must return another object
   /*
   Benefits
       1 - works miracles in multithreaded/distributed env (speed up development tremendously)
@@ -154,7 +160,7 @@ object ObjectOrientation extends App {
 
   val reversedList = aList.reverse // returns a new list
 
-  // 2 - Scala is closest to the Object oriented ideal
+  // 2 - Scala is closest to the Object oriented ideal -> truly OOP
   // all code and all the values that we operate with are inside an instance of some type
   // part of object or class
 

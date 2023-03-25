@@ -39,8 +39,10 @@ object FunctionalProgramming extends App {
 
   stringConcatenator("I love"," Scala") // "I love Scala"
 
-  // syntax sugars - alternative syntax that will replace thses much heavier boilerplate code
+  // syntax sugars - alternative syntax that will replace these much heavier boilerplate code
+  val doubler2: Function1[Int,Int] = (x: Int) => 2*x
   val doubler: Int => Int = (x: Int) => 2*x  // you can ommit Int => Int
+  val doubler3 = (x: Int) => 2*x
   /*
   Function1[Int,Int] is equivalent  Int => Int
   equivalent to much longer :
@@ -67,7 +69,7 @@ object FunctionalProgramming extends App {
   val aFilteredListAlternativeSyntax = List(1,2,3,4,5).filter(_ <= 3) // _ equivalent x => x
   println(aFilteredList)
 
-  // all paris between the numbers 1,2,3 and the letters 'a','b','c'
+  // all pairs between the numbers 1,2,3 and the letters 'a','b','c'
 
   // s is interpolated string
   val allPairs = List(1,2,3).flatMap(number => List('a','b','c').map(letter => s"$number-$letter"))
