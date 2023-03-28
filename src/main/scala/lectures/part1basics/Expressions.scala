@@ -72,6 +72,9 @@ object Expressions extends App {
     if(z > 2) "hello" else "goodbye"
   }
 
+  // instructions are executed like java, expressions are evaluated like scala
+
+  // difference between "hello world" vs println("hello world") ?
 
 
 
