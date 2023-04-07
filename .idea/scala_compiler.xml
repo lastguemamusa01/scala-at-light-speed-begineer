@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="youtube-scala,scala-at-light-speed" />
+    <profile name="sbt 1" modules="youtube-scala">
+      <option name="postfixOps" value="true" />
+    </profile>
+    <profile name="sbt 2" modules="scala-at-light-speed" />
   </component>
 </project>

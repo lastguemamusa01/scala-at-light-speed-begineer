@@ -10,8 +10,6 @@ object OOBasics extends App {
   // class filed -> class Person(val name: String, val age: Int)
   // class - blueprints
 
-
-
   // println(person.age)
   // println(person.x)
   person.greet("daniel")
@@ -35,8 +33,6 @@ object OOBasics extends App {
   counter.inc.print
   counter.inc.inc.inc.print
   counter.inc(10).print
-
-  //
 
 
 }
