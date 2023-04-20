@@ -1,6 +1,6 @@
 package lectures.part2oop
 
-object InheritannceAndTraits extends App {
+object Inheritannce extends App {
 
   // scala is single class inheritance
   // inheriting all the non private fileds and methods
