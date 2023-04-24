@@ -60,4 +60,27 @@ object AnonymousClasses extends App {
 
   println(predator.getClass)
 
+
+  /*
+   1 - create a generic trait called MyPredicate[-T] -> have a small method (test(T) => Boolean // return boolean)
+       to test whether a value of type T passes a condition so every subclass of MyPredicate T will actually
+       have a different implementation of that little method
+   2 - Generic trait called MyTransformer[-A,B] -> have a small method( transform(A) => B ) to convert a value of Type A into value of Type B
+       so every subclass of MyTransformer have a different implemenation
+   3 - GenericMyList:
+       - map(transformer) =>  GenericMyList   // retun a new MyList of different type
+       - filter(MyPredicate) => GenericMyList
+       - flapmap(transformer from A to GenericMyList[B]) =>  GenericMyList[B]
+
+       class EvenPredicate extends MyPredicate[Int]
+       class StringToIntTransformer extends MyTransformer[String, Int]
+
+       pseudocode
+       [1,2,3].map(n * 2) = [2,4,6]
+       filter
+       [1,2,3,4].filter(n%2) = [2,4]
+       [1,2,3].flatmap(n => [n,n+1]) => [1,2,2,3,3,4]
+
+  */
+
 }
