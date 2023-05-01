@@ -56,5 +56,63 @@ object HOFsCurries extends App {
   println(standardFormat(Math.PI))
   println(preciseFormat(Math.PI))
 
+  /*
+  1 - exapand MyList  -> HOFCurriesMyList.scala
+    - foreach method - A => Unit    -> for each element have side effect. apply this function of every element of myList
+        [1,2,3].foreach(x => println(x))
+    - sort function - compare 2 functions, ((A,A) => Int) => MyList
+        [1,2,3].sort((x,y) => y - x) => [3,2,1]  descending sort
+    - zipWith (list, (A,A) => b) => MyList[B]
+        [1,2,3].zipWith([4,5,6], x * y) => [1*4, 2*5, 3*6] = [4,10,18]
+    - fold - curried function -
+        fold(start value)(function) => a value
+        [1,2,3].fold(0)(x+y) => 6 - sum of the numbers in the list
+
+  2 - defining methods to turn functions into curried and uncurried version
+
+  toCurry(f: (Int, Int) => Int) => (Int => Int => Int)
+  fromCurry(Int => Int => Int) =>  (Int, Int) => Int
+
+  3 - abstract math - methods which compose 2 functions
+
+  compose(f,g) => x => f(g(x))   - rambda - function composition
+  andThen(f,g) => x => g(f(x))  - applied f first then g
+  */
+
+
+  def toCurry(f: (Int, Int) => Int): (Int => Int => Int) =
+    x => y => f(x, y)
+
+  def fromCurry(f: (Int => Int => Int)): (Int, Int) => Int =
+    (x, y) => f(x)(y)
+
+  // in the library FunctionX compose and andthen is available
+  def compose(f: Int => Int, g: Int => Int): Int => Int =
+    x => f(g(x))
+
+  def compose2[A, B, T](f: A => B, g: T => A): T => B =
+    x => f(g(x))
+
+  def andThen(f: Int => Int, g: Int => Int): Int => Int =
+    x => g(f(x))
+
+  def andThen2[A, B, C](f: A => B, g: B => C): A => C =
+    x => g(f(x))
+
+  def supperAdder2: (Int => Int => Int) = toCurry(_ + _)
+  def add4 = supperAdder2(4)
+  println(add4(17))
+
+  val simpleAdder = fromCurry(superAdder)
+  println(simpleAdder(4, 17))
+
+  val add2 = (x: Int) => x+2
+  val times3 = (x: Int) => x * 3
+
+  val composed = compose2(add2, times3)
+  val ordered = andThen2(add2, times3)
+
+  println(composed(4))
+  println(ordered(4))
 
 }
