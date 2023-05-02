@@ -70,5 +70,44 @@ object MapFlatmapFilterFor extends App {
 
    // Maybe is used in functional programming to denote Optional values -> Maybe.scala
 
+  // scala offers both mutable and immutable collections
+  // mutable collections can be updated in place
+  // immutable collections never change - you need to instantiate a new collection every time you need to make a change
+  // default we are using immutable coLlections
+  /*
+  object predef {
+    type Map [A, +B] = immutable.Map[A, B]
+  }
+   */
+
+  // Immutable collections -> are found in scala.collections immutable package -> Traversable(Start it)
+  // Iterable extended by Traversable.
+  // Set, Seq, Map is extended by Iterable
+  // Set -> HashSet, SortedSet
+  // Map -> HashMap, SorteMap
+  // Seq -> IndexedSeq, LinearSeq
+  // IndexSeq -> Vector, Range, String -> access 0 time
+  // LinearSeq -> List, Queue(FIFO), Stream, Stack(LIFO)
+
+  // mutable collections -> are foun in scala.collections.mutable (X)
+  // Itearble extended by Traversable
+  // Set, Seq, Map is extended by Iterable
+  // Set -> HashSet, LinkedHashSet
+  // Map -> HashMap, MultiMap
+  // Seq -> IndexedSeq, LinearSeq, Buffer
+  // IndexSeq -> StringBuilder, ArrayBuffer
+  // Buffer -> ArrayBuffer, ListBuffer
+  // LinearSeq -> LinkedList, MutableList
+
+  // Traversable - base trait for all collections ->
+    // maps - map, flatMap, collect
+    // conversions - toArray, toList, toSeq
+    // size info - isEmpty, Size, nonEmpty
+    // tests - exists, forall
+    // folds - foldLeft, foldRight, reduceLeft, reduceRight
+    // retrieval - head, find, tail
+    // string ops - mkString
+
+
 
 }
