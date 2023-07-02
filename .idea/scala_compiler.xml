@@ -4,8 +4,6 @@
     <profile name="sbt 1" modules="youtube-scala">
       <option name="postfixOps" value="true" />
     </profile>
-    <profile name="sbt 2" modules="scala-at-light-speed">
-      <option name="postfixOps" value="true" />
-    </profile>
+    <profile name="sbt 2" modules="scala-at-light-speed" />
   </component>
 </project>
