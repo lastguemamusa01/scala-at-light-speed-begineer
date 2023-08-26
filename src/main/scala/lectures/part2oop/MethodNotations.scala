@@ -1,5 +1,7 @@
 package lectures.part2oop
 
+import scala.language.postfixOps
+
 object MethodNotations extends App {
 
   // going to create class inside the object, to avoid conflict with another class Person in OOBasic object external Person Class

@@ -107,4 +107,23 @@ object PartialFunctions extends App {
   // .map(chatbot) -> i put them throught the chatbot PartialFunction
   // .foreach(println) - the response i println
 
+  // Sequences are callable trhough an integer index
+  // Maps are callable through their keys
+  /*
+  val numbers = List(1,2,3)
+  numbers(1) // 2
+  numbers(3) // java.lang.IndexOutOfBoundsException
+
+  Seqs are partially defined on the domain [0, ..., length-1]
+  sequences are partial funcions !
+
+  val phoneMappings = Map(2 -> "ABC", 3 -> "DEF")
+  phoneMappings(2) // "ABC"
+  phoneMappings(1) // java.lang.NoSuchElementException
+
+  A map is defined  on the domain of its keys
+  Maps are partial functions.
+
+  */
+
 }
