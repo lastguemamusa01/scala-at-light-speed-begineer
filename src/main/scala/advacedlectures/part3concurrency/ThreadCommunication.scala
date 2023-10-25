@@ -164,7 +164,7 @@ object ThreadCommunication extends App {
           buffer.notify()
         }
         // computation simulation with sleep
-        Thread.sleep(random.nextInt(500)) // max wil be 5 seconds -> 500
+        Thread.sleep(random.nextInt(500)) // max wil be 5 seconds -> half second
       }
     })
 
@@ -198,6 +198,189 @@ object ThreadCommunication extends App {
     producer.start()
   }
 
-  prodConsLargeBuffer()
+  // prodConsLargeBuffer()
+
+  /*
+   prod-cons, level 3
+   producer1 ->  [? ? ?] -> consumer1
+   producer 2 -----^  ^---- consumer2
+   multiple producers and consumers
+   */
+
+  class Consumer(id: Int, buffer: mutable.Queue[Int]) extends Thread {
+    override def run(): Unit = { // Runnable Thread, Thread implements Runnable
+      val random = new Random()
+
+      while (true) { // this always be true, to simulate the consumer that is alive forever
+        buffer.synchronized {
+          /*
+          producer produces value, 2 Cons are waiting
+          notifies one consumer, notifies on buffer
+          notifies the other consumer -> X
+          */
+          while (buffer.isEmpty) { // repeatively check, ok im awake up and buffer is empty ?
+            println(s"[consumer $id] buffer empty, waiting... ")
+            buffer.wait()
+          }
+
+          // there must be at least one value in the buffer
+          val x = buffer.dequeue()
+          println(s"[consumer $id] consumed " + x)
+
+          // hey somebody(producer or consumer) wake up
+          buffer.notifyAll()  // use notifyAll instead of notify, in multi consumer and producer, to prevent deadlock
+        }
+        // computation simulation with sleep
+        Thread.sleep(random.nextInt(500)) // max wil be 5 seconds -> half second
+      }
+    }
+  }
+
+  class Producer(id: Int, buffer: mutable.Queue[Int], capacity: Int) extends Thread {
+    override def run(): Unit = {
+      val random = new Random()
+      var i = 0 // sequencer
+
+      while (true) {
+        buffer.synchronized {
+          while (buffer.size == capacity) { // if the buffer is full
+            println(s"[producer $id] buffer is full, waiting...")
+            buffer.wait()
+          }
+
+          // there must be at least one empty space in the buffer
+          println(s"[producer $id] producing " + i)
+          buffer.enqueue(i)
+
+          // hey somebody(producer or consumer) wake up
+          buffer.notifyAll()
+
+          i += 1
+        }
+
+        // computation simulation with sleep
+        Thread.sleep(random.nextInt(500))
+      }
+    }
+  }
+
+  def multiProdCons(nConsumers: Int, nProducers: Int): Unit = {
+    val buffer: mutable.Queue[Int] = new mutable.Queue[Int]
+    val capacity = 20
+
+    (1 to nConsumers).foreach(i => new Consumer(i, buffer).start())
+    (1 to nProducers).foreach(i => new Producer(i, buffer, capacity).start())
+
+  }
+
+  // multiProdCons(3, 3)
+
+  /*
+  exercises
+  1) think of an example whre notifyAll acts in a different way than notify ?
+  2) create a deadlock -> deadlock is a situation when one thread or multiple threads block each other and they cannot continue
+  3) create a livelock -> livelcok is also a situation when threads cannot continue, but as opposed to a deadlock.
+  implies that threads yield execution to each other in such a way that nobody can continue, threads are active, not blocked, but they cannot continue
+  */
+
+  // notifyAll
+
+  def testNotifyAll(): Unit = {
+    val bell = new Object
+
+    (1 to 10).foreach(i => new Thread(() => {
+      bell.synchronized {
+        println(s"[thread $i] waiting...")
+        bell.wait()
+        println(s"[thread $i] hooray!")
+      }
+    }).start())
+
+    new Thread(() => {
+      Thread.sleep(2000)
+      println("[announcer] Rock'n roll!")
+      bell.synchronized {
+        bell.notifyAll()
+      }
+
+    }).start()
+  }
+
+  // thread 1 to 10 will be waiting, after 2 minutes of announcer rock n roll. all threads will be hooray !
+  // this is cannot possible with notify(), only one thread will be hooray! when 9 still be blocked
+  // testNotifyAll()
+
+  // 2 - deadlock
+  // small and imaginary society where people salute by bowing and when someone bows to you,
+  // you bow to them and you only rise when the other person has started rising
+  // this dont make sense, because each other wating to started rising to rise, so this people will be bowing everytime
+
+  case class Friend(name: String) {
+    def bow(other: Friend) = {
+      this.synchronized {
+        println(s"$this: I am bowing to my fried $other")  // s is interporated string
+        other.rise(this)
+        println(s"$this: my friend $other has risen")
+      }
+    }
+
+    def rise(other: Friend) = {
+      this.synchronized {
+        println(s"$this: I am rising to my fried $other")
+      }
+    }
+
+    // livelock
+    var side = "right"
+    def switchSide(): Unit = {
+      if(side == Right) side = "left"
+      else side = "right"
+    }
+
+    def pass(other: Friend): Unit = {
+      while(this.side == other.side) {
+        println(s"$this: oh, but please, $other, feel free to pass...")
+        switchSide()
+        Thread.sleep(1000) // 1 seconds
+      }
+    }
+
+  }
+
+  val sam = Friend("Sam")
+  val pierre = Friend("Pierre")
+
+  // new Thread(() => sam.bow(pierre)).start()
+  // new Thread(() => pierre.bow(sam)).start()
+
+  /*
+  lock each other
+  Friend(Sam): I am bowing to my fried Friend(Pierre) // sam's lock,    | then pierre's lock
+  Friend(Pierre): I am bowing to my fried Friend(Sam) // pierre's lock, | then sam's lock
+  */
+
+
+  // 3 - livelock
+  // exreme polite society, you an dyour friend meet from different directions on the same
+  // road and are about to bump into each other, then you must be so polite that you will
+  // give way to your friend to cross
+  // left and right side
+
+  new Thread(() => sam.pass(pierre)).start()
+  new Thread(() => pierre.pass(sam)).start()
+
+  /*
+
+  Friend(Sam): oh, but please, Friend(Pierre), feel free to pass...
+  Friend(Pierre): oh, but please, Friend(Sam), feel free to pass...
+  Friend(Pierre): oh, but please, Friend(Sam), feel free to pass...
+  Friend(Sam): oh, but please, Friend(Pierre), feel free to pass...
+  ........
+
+  infinite loop -
+  no thread blocked, but no thread continue running, because there are yielding execution to each other.
+   */
+
+
 
 }
