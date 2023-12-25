@@ -78,34 +78,6 @@ object TypeClasses extends App {
   type class specifies a set of operations -> serialize that can be applied to a given type
    */
 
-  // type class -> template
-  trait MyTypeClassTemplate[T] {
-    def action(value: T): String
-  }
-
-  object MyTypeClassTemplate {
-    def apply[T](implicit instance: MyTypeClassTemplate[T]) = instance
-  }
-
-  /*
-  exercises
-  1 - Equality
-  */
-
-  trait Equal[T] {
-    def apply(a: T, b: T): Boolean
-  }
-
-  object NameEquality extends Equal[User] {
-    override def apply(a: User, b: User): Boolean = a.name == b.name
-  }
-
-  implicit object FullEquality extends Equal[User] {
-    override def apply(a: User, b: User): Boolean = a.name == b.name && a.email == b.email
-  }
-
-
-
   // part2
 
   // implicit type class instances by implicit values and parameters
@@ -128,27 +100,56 @@ object TypeClasses extends App {
   // access to the entire type class interface
   println(HTMLSerializer[User].serialize(min))
 
-
-  /*
-  Exercise: Implement the Type Class pattern for the Equality type class
-   */
-
-  object Equal {
-    def apply[T](a: T, b: T)(implicit equalizer: Equal[T]): Boolean =
-      equalizer.apply(a, b)
+  // part 3
+  implicit class HTMLEnrichment[T](value: T) {
+    def toHTML(implicit serializer: HTMLSerializer[T]): String = serializer.serialize(value)
   }
 
-  val anotherMin = User("Min", 29, "anotherMin@hotmail.com")
-  println(Equal(min, anotherMin))   // instead of using Equal.apply(min. anotherMin) ad-hoc polymorphism
+  println(min.toHTML) // re written by the compiler like -> println(new HTMLEnrichment[User](min).toHTML(UserSerialize))
 
-  // ad-hoc polymorphism - we achieved polymorphism in the sense that if 2 disntict or potentilally
-  // unrelated types have equalizers implemented, then we can call this equal thing on them
-  // regardless of their type
-  // polymorphism = because depending on the actual type of the values being compared, the compiler
-  // takes care to fetch the correct type class instance for our types
+  /*
+  - extends to new type
+  - choose implementation
+  - super expressive!
+   */
 
+  println(2.toHTML)
+  println(min.toHTML(PartialUserSerializer))
 
+  /*
+   - type class itself -> HTMLSerializer[T] { .. }
+   - type class instances (some of which are implicit) -> UserSerializer, IntSerializer, etc.
+   - conversion with implicit classes -> HTMLEnrichment
+   */
 
+  // context bounds
 
+  def htmlBoilerplate[T](content: T)(implicit serializer: HTMLSerializer[T]): String =
+    s"<html><body> ${content.toHTML(serializer)}</body></html>"
+
+//  def htmlSugar[T: HTMLSerializer](content: T): String =  // [T: HTMLSerializer] -> context bouds, this tell to the compiler that inject after (content: T)
+//    s"<html><body> ${content.toHTML}</body></html>"       // this (implicit serializer: HTMLSerializer[T])
+
+  def htmlSugar[T: HTMLSerializer](content: T): String = {
+    val serializer = implicitly[HTMLSerializer[T]]  // you can use serializer by name, also method with compact method signature
+    // user serializer
+    s"<html><body> ${content.toHTML(serializer)}</body></html>"
+
+  }
+
+  // implicitly -> method
+  case class Permissions(mask: String)
+  implicit val defaultPermissions: Permissions = Permissions("0744")
+
+  // in some other part of the code -> if we want to surface them out
+  val standardPerms = implicitly[Permissions]
+
+  // declare type class trait, type class instances ofter implicit that the object extendes of type class trait
+
+  // option 1 - invoking ytp class instances, using companion object
+  // call it implicit way
+
+  // option 2 - enriching types with type classes -> implicit class that rewrite method of type class trait, add the implicit parameter
+  // call that in enriched types -> like build in method
 
 }
